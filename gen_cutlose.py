@@ -28,7 +28,7 @@ for name in list(train.columns):
         #print('all False.')
         continue
     #print(values[True])
-    if values[True] > 25000:
+    if values[True] > 47000:
         #print(name, values[True])
         drop_columns.append(name)
         

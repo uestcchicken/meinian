@@ -39,5 +39,6 @@ for i in range(0, len(lines)):
 test = train[len_train:]
 train = train[:len_train]
 
+train = train.sample(frac = 1)
 train.to_csv('train_feature_numerical.csv', index = False)
 test.to_csv('test_feature_numerical.csv', index = False)

@@ -7,12 +7,16 @@ import gc
 import xgboost as xgb
 import math
 
-'''
-def my_error(preds, train_data):
+def obj_function(preds, train_data):
+    y = train_data.get_label()
+    p = preds
+    grad = np.square(np.log1p(p) - np.log1p(y))
+    hess = 2.0 / (p + 1.0) * (np.log1p(p) - np.log1p(y))
+    return grad, hess
+    
+def eval_function(preds, train_data):
     labels = train_data.get_label()
-    result = np.mean((np.log10(preds + 1) - np.log10(labels + 1)) ** 2)
-    return 'my_error', result, False
-'''
+    return 'loss', np.mean(np.square(np.log1p(preds) - np.log1p(labels))), False
 
 train_path = 'train_cut_useless.csv'
 test_path = 'test_cutlose.csv'
@@ -27,7 +31,6 @@ print(train.sample(5))
 
 l = len(train)
 r = 0.1
-train = train.sample(frac = 1)
 val = train[(l - round(r * l)):]
 train = train[:(l - round(r * l))]
 
@@ -35,12 +38,13 @@ predictors = list(train.columns)
 predictors.remove('vid')
 for t in ['A', 'B', 'C', 'D', 'E']:
     predictors.remove(t)
-print(predictors)
+#print(predictors)
 
-categorical = ['2302']
+categorical = ['2302', '0116', '0113_1', '0113_2']
 
 params = {
     'boosting': 'gbdt',
+    'objective': 'regression',
     'metric': 'rmse',
     'application': 'regression',
     'learning_rate': 0.1,
@@ -58,11 +62,32 @@ dtrain_D = lgb.Dataset(train[predictors].values, label = train['D'].values, feat
 dvalid_D = lgb.Dataset(val[predictors].values, label = val['D'].values, feature_name = predictors, categorical_feature = categorical)
 dtrain_E = lgb.Dataset(train[predictors].values, label = train['E'].values, feature_name = predictors, categorical_feature = categorical)
 dvalid_E = lgb.Dataset(val[predictors].values, label = val['E'].values, feature_name = predictors, categorical_feature = categorical)
-lgb_model_A = lgb.train(params, dtrain_A, verbose_eval = 50, valid_sets = [dtrain_A, dvalid_A], num_boost_round = 1000, early_stopping_rounds = 50)
-lgb_model_B = lgb.train(params, dtrain_B, verbose_eval = 50, valid_sets = [dtrain_B, dvalid_B], num_boost_round = 1000, early_stopping_rounds = 50)
-lgb_model_C = lgb.train(params, dtrain_C, verbose_eval = 50, valid_sets = [dtrain_C, dvalid_C], num_boost_round = 1000, early_stopping_rounds = 50)
-lgb_model_D = lgb.train(params, dtrain_D, verbose_eval = 50, valid_sets = [dtrain_D, dvalid_D], num_boost_round = 1000, early_stopping_rounds = 50)
-lgb_model_E = lgb.train(params, dtrain_E, verbose_eval = 50, valid_sets = [dtrain_E, dvalid_E], num_boost_round = 1000, early_stopping_rounds = 50)
+
+result_A = {}
+result_B = {}
+result_C = {}
+result_D = {}
+result_E = {}
+
+lgb_model_A = lgb.train(params, dtrain_A, feval = eval_function, evals_result = result_A, verbose_eval = 50, \
+    valid_sets = [dtrain_A, dvalid_A], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_B = lgb.train(params, dtrain_B, feval = eval_function, evals_result = result_B, verbose_eval = 50, \
+    valid_sets = [dtrain_B, dvalid_B], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_C = lgb.train(params, dtrain_C, feval = eval_function, evals_result = result_C, verbose_eval = 50, \
+    valid_sets = [dtrain_C, dvalid_C], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_D = lgb.train(params, dtrain_D, feval = eval_function, evals_result = result_D, verbose_eval = 50, \
+    valid_sets = [dtrain_D, dvalid_D], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_E = lgb.train(params, dtrain_E, feval = eval_function, evals_result = result_E, verbose_eval = 50, \
+    valid_sets = [dtrain_E, dvalid_E], num_boost_round = 1000, early_stopping_rounds = 50)
+
+loss_all = 0.0
+loss_all += result_A['valid_1']['loss'][lgb_model_A.best_iteration - 1]
+loss_all += result_B['valid_1']['loss'][lgb_model_B.best_iteration - 1]
+loss_all += result_C['valid_1']['loss'][lgb_model_C.best_iteration - 1]
+loss_all += result_D['valid_1']['loss'][lgb_model_D.best_iteration - 1]
+loss_all += result_E['valid_1']['loss'][lgb_model_E.best_iteration - 1]
+print('final loss: ', loss_all / 5)
+
 
 print('predicting submission...')
 submit = pd.read_csv(test_path, usecols = ['vid'])       
@@ -73,15 +98,11 @@ submit['D'] = lgb_model_D.predict(test[predictors], num_iteration = lgb_model_D.
 submit['E'] = lgb_model_E.predict(test[predictors], num_iteration = lgb_model_E.best_iteration)
 
 '''
-print('AFeature names:', lgb_model_A.feature_name())
+print('Feature names:', lgb_model_A.feature_name())
 print('AFeature importances:', list(lgb_model_A.feature_importance()))      
-print('BFeature names:', lgb_model_B.feature_name())
 print('BFeature importances:', list(lgb_model_B.feature_importance()))  
-print('CFeature names:', lgb_model_C.feature_name())
 print('CFeature importances:', list(lgb_model_C.feature_importance()))  
-print('DFeature names:', lgb_model_D.feature_name())
 print('DFeature importances:', list(lgb_model_D.feature_importance()))  
-print('EFeature names:', lgb_model_E.feature_name())
 print('EFeature importances:', list(lgb_model_E.feature_importance()))  
 '''
 
