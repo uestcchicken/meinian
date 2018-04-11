@@ -1,5 +1,4 @@
 import pandas as pd 
-import time
 
 f = open('data.csv', 'r')
 lines = f.readlines()[1:]
@@ -14,13 +13,10 @@ print(len(train))
 train = train.append(test)
 print(len(train))
 
-t1 = time.time()
-
 for i in range(0, len(lines)):
     if i % 10000 == 0:
         print(i, '/', len(lines), i / len(lines) * 100 , '%')
     l = lines[i]
-    
     
     
     ########################
@@ -39,11 +35,9 @@ for i in range(0, len(lines)):
 
     train.loc[train['vid'] == l[0], l[1]] = num
     
-t2 = time.time()
-print(t2 - t1)
 
 test = train[len_train:]
 train = train[:len_train]
 
-train.to_csv('train_feature.csv', index = False)
-test.to_csv('test_feature.csv', index = False)
+train.to_csv('train_feature_numerical.csv', index = False)
+test.to_csv('test_feature_numerical.csv', index = False)

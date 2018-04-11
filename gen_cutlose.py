@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np 
 import gc
 
-train_path = 'train_after.csv'
-test_path = 'test_after.csv'
+train_path = 'train_feature.csv'
+test_path = 'test_feature.csv'
 
 print('loading train data...')
 train = pd.read_csv(train_path)

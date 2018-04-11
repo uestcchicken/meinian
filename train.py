@@ -7,12 +7,14 @@ import gc
 import xgboost as xgb
 import math
 
+'''
 def my_error(preds, train_data):
     labels = train_data.get_label()
     result = np.mean((np.log10(preds + 1) - np.log10(labels + 1)) ** 2)
     return 'my_error', result, False
+'''
 
-train_path = 'train_cutlose.csv'
+train_path = 'train_cut_useless.csv'
 test_path = 'test_cutlose.csv'
 
 print('loading train data...')
@@ -21,7 +23,7 @@ print('loading test data...')
 test = pd.read_csv(test_path)
 
 print(train.info())
-print(train.sample(20))
+print(train.sample(5))
 
 l = len(train)
 r = 0.1
@@ -35,6 +37,8 @@ for t in ['A', 'B', 'C', 'D', 'E']:
     predictors.remove(t)
 print(predictors)
 
+categorical = ['2302']
+
 params = {
     'boosting': 'gbdt',
     'metric': 'rmse',
@@ -44,21 +48,21 @@ params = {
     'nthread': 8
 }
 
-dtrain_A = lgb.Dataset(train[predictors].values, label = train['A'].values, feature_name = predictors)
-dvalid_A = lgb.Dataset(val[predictors].values, label = val['A'].values, feature_name = predictors)
-dtrain_B = lgb.Dataset(train[predictors].values, label = train['B'].values, feature_name = predictors)
-dvalid_B = lgb.Dataset(val[predictors].values, label = val['B'].values, feature_name = predictors)
-dtrain_C = lgb.Dataset(train[predictors].values, label = train['C'].values, feature_name = predictors)
-dvalid_C = lgb.Dataset(val[predictors].values, label = val['C'].values, feature_name = predictors)
-dtrain_D = lgb.Dataset(train[predictors].values, label = train['D'].values, feature_name = predictors)
-dvalid_D = lgb.Dataset(val[predictors].values, label = val['D'].values, feature_name = predictors)
-dtrain_E = lgb.Dataset(train[predictors].values, label = train['E'].values, feature_name = predictors)
-dvalid_E = lgb.Dataset(val[predictors].values, label = val['E'].values, feature_name = predictors)
-lgb_model_A = lgb.train(params, dtrain_A, verbose_eval = 20, valid_sets = [dtrain_A, dvalid_A], num_boost_round = 400, early_stopping_rounds = 30)
-lgb_model_B = lgb.train(params, dtrain_B, verbose_eval = 20, valid_sets = [dtrain_B, dvalid_B], num_boost_round = 400, early_stopping_rounds = 30)
-lgb_model_C = lgb.train(params, dtrain_C, verbose_eval = 20, valid_sets = [dtrain_C, dvalid_C], num_boost_round = 400, early_stopping_rounds = 30)
-lgb_model_D = lgb.train(params, dtrain_D, verbose_eval = 20, valid_sets = [dtrain_D, dvalid_D], num_boost_round = 400, early_stopping_rounds = 30)
-lgb_model_E = lgb.train(params, dtrain_E, verbose_eval = 20, valid_sets = [dtrain_E, dvalid_E], num_boost_round = 400, early_stopping_rounds = 30)
+dtrain_A = lgb.Dataset(train[predictors].values, label = train['A'].values, feature_name = predictors, categorical_feature = categorical)
+dvalid_A = lgb.Dataset(val[predictors].values, label = val['A'].values, feature_name = predictors, categorical_feature = categorical)
+dtrain_B = lgb.Dataset(train[predictors].values, label = train['B'].values, feature_name = predictors, categorical_feature = categorical)
+dvalid_B = lgb.Dataset(val[predictors].values, label = val['B'].values, feature_name = predictors, categorical_feature = categorical)
+dtrain_C = lgb.Dataset(train[predictors].values, label = train['C'].values, feature_name = predictors, categorical_feature = categorical)
+dvalid_C = lgb.Dataset(val[predictors].values, label = val['C'].values, feature_name = predictors, categorical_feature = categorical)
+dtrain_D = lgb.Dataset(train[predictors].values, label = train['D'].values, feature_name = predictors, categorical_feature = categorical)
+dvalid_D = lgb.Dataset(val[predictors].values, label = val['D'].values, feature_name = predictors, categorical_feature = categorical)
+dtrain_E = lgb.Dataset(train[predictors].values, label = train['E'].values, feature_name = predictors, categorical_feature = categorical)
+dvalid_E = lgb.Dataset(val[predictors].values, label = val['E'].values, feature_name = predictors, categorical_feature = categorical)
+lgb_model_A = lgb.train(params, dtrain_A, verbose_eval = 50, valid_sets = [dtrain_A, dvalid_A], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_B = lgb.train(params, dtrain_B, verbose_eval = 50, valid_sets = [dtrain_B, dvalid_B], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_C = lgb.train(params, dtrain_C, verbose_eval = 50, valid_sets = [dtrain_C, dvalid_C], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_D = lgb.train(params, dtrain_D, verbose_eval = 50, valid_sets = [dtrain_D, dvalid_D], num_boost_round = 1000, early_stopping_rounds = 50)
+lgb_model_E = lgb.train(params, dtrain_E, verbose_eval = 50, valid_sets = [dtrain_E, dvalid_E], num_boost_round = 1000, early_stopping_rounds = 50)
 
 print('predicting submission...')
 submit = pd.read_csv(test_path, usecols = ['vid'])       
