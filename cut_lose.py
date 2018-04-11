@@ -19,17 +19,13 @@ print(train.info())
 
 drop_columns = []
 for name in list(train.columns):
-    #print('name: ', name)
     n = train[name]
     values = n.isnull().value_counts()
     if len(values.index) == 1:
         if values.index[0] == True:
             drop_columns.append(name)
-        #print('all False.')
         continue
-    #print(values[True])
     if values[True] > 47000:
-        #print(name, values[True])
         drop_columns.append(name)
         
 print(drop_columns)
