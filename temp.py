@@ -1,7 +1,21 @@
 import pandas as pd 
+import numpy as np
 
 f = pd.read_csv('train_cut_useless.csv')
-f2 = pd.read_csv('test_cutlose.csv')
 
-print(f['2406'].describe())
-print(f2['2406'].describe())
+
+loss_all = 0
+for name in ['A', 'B', 'C', 'D', 'E']:
+
+    print(f[name].describe())
+    mean = f[name].mean()
+
+    nums = f[name].values
+
+    sum = 0
+    for n in nums:
+        loss = np.square(np.log1p(mean) - np.log1p(n))
+        sum += loss
+    print(sum / len(nums))
+    loss_all += sum / len(nums)
+print(loss_all / 5)

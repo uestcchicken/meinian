@@ -1,5 +1,7 @@
 1. 拼接两个data文件，仅一个头行
 
+对train.csv手动删除或修改了一些不能转换为float的值
+
 2. gen_feature_numerical.py  
 生成二维数据（仅取数值型）feature_numerical.csv
 
@@ -113,7 +115,7 @@ params = {
 
 #### result
 
-valid: 0.0304 
+valid: 0.0304  
 score: 0.0326
 
 ## v1.1
@@ -157,12 +159,46 @@ categorical = ['2302', '0116', '0113_1', '0113_2', '1001']
 params = {
     'boosting': 'gbdt',
     'objective': 'none',
-    'learning_rate': 0.1,
-    'num_leaves': 16,
+    'learning_rate': 0.05,
+    'num_leaves': 64,
+    'feature_fraction': 0.8,
     'nthread': 8
 }
 ```
 
 #### result 
 
-valid: 0.0284
+valid: 0.0284  
+score: 0.0311
+
+## v1.2
+
+- 加入feature0118_1, 0118_2
+
+#### add_text_feature.py
+
+```python
+if l[1] == '0118':
+      if '系统分离' in l[2]:
+          num1 = 1
+      elif '未见分离' in l[2] or '未见明显分离' in l[2]:
+          num1 = 2
+      else:
+          num1 = 0
+          
+      if '强回声' in l[2]:
+          num2 = 1
+      elif '弱回声' in l[2] or '低回声' in l[2]:
+          num2 = 2
+      elif '无回声' in l[2]:
+          num2 = 3
+      else:
+          num2 = 0
+      train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
+      train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
+```
+
+#### result 
+
+valid: 0.0284  
+score:

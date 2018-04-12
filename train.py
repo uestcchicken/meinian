@@ -39,13 +39,13 @@ predictors.remove('vid')
 for t in ['A', 'B', 'C', 'D', 'E']:
     predictors.remove(t)
 
-categorical = ['2302', '0116', '0113_1', '0113_2', '1001']
+categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2']
 
 params = {
     'boosting': 'gbdt',
     'objective': 'none',
     'learning_rate': 0.05,
-    'num_leaves': 32,
+    'num_leaves': 64,
     'feature_fraction': 0.8,
     'nthread': 8
 }
@@ -68,15 +68,15 @@ result_C = {}
 result_D = {}
 result_E = {}
 
-lgb_model_A = lgb.train(params, dtrain_A, feval = eval_function, fobj = obj_function, evals_result = result_A, verbose_eval = 50, \
+lgb_model_A = lgb.train(params, dtrain_A, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_A, verbose_eval = 50, \
     valid_sets = [dtrain_A, dvalid_A], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_B = lgb.train(params, dtrain_B, feval = eval_function, fobj = obj_function, evals_result = result_B, verbose_eval = 50, \
+lgb_model_B = lgb.train(params, dtrain_B, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_B, verbose_eval = 50, \
     valid_sets = [dtrain_B, dvalid_B], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_C = lgb.train(params, dtrain_C, feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 50, \
+lgb_model_C = lgb.train(params, dtrain_C, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 50, \
     valid_sets = [dtrain_C, dvalid_C], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_D = lgb.train(params, dtrain_D, feval = eval_function, fobj = obj_function, evals_result = result_D, verbose_eval = 50, \
+lgb_model_D = lgb.train(params, dtrain_D, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_D, verbose_eval = 50, \
     valid_sets = [dtrain_D, dvalid_D], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_E = lgb.train(params, dtrain_E, feval = eval_function, fobj = obj_function, evals_result = result_E, verbose_eval = 50, \
+lgb_model_E = lgb.train(params, dtrain_E, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_E, verbose_eval = 50, \
     valid_sets = [dtrain_E, dvalid_E], num_boost_round = 10000, early_stopping_rounds = 50)
 
 loss_all = 0.0
