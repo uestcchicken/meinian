@@ -7,7 +7,7 @@
 加入特征2302,0116,0113
 
 4. cut_lose.py  
-丢弃缺失值比例较大的列得到cutlose.py
+丢弃缺失值比例较大的列得到cutlose.csv
 
 5. cut_useless.py  
 删除异常数据，仅对train，得到train_cut_useless.csv
@@ -25,7 +25,7 @@ todo：
 - data里哪些是1人1项多次的
 - fobj
 
-### version1.0
+## v1.0
 
 #### add_text_feature.py
 
@@ -79,7 +79,7 @@ if l[1] == '2302':
 #### cut_lose.py
 
 ```python
-if values[True] > 47000:
+if values[True] > 47500:
       drop_columns.append(name)
 ```
 
@@ -109,3 +109,31 @@ params = {
     'nthread': 8
 }
 ```
+
+#### result
+
+valid: 0.0304 
+score: 0.0326
+
+## v1.1
+
+使用自定义fobj
+
+#### train.py
+
+```python
+def obj_function(preds, train_data):
+    y = train_data.get_label()
+    p = preds
+    grad = 2.0 / (p + 1.0) * (np.log1p(p) - np.log1p(y))
+    hess = 2.0 / np.square(p + 1.0) * (1.0 - np.log1p(p) + np.log1p(y))
+    return grad, hess
+    
+def eval_function(preds, train_data):
+    labels = train_data.get_label()
+    return 'loss', np.mean(np.square(np.log1p(preds) - np.log1p(labels))), False
+```
+
+#### result 
+
+valid: 0.0289

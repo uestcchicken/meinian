@@ -25,7 +25,7 @@ for name in list(train.columns):
         if values.index[0] == True:
             drop_columns.append(name)
         continue
-    if values[True] > 47000:
+    if values[True] > 47500:
         drop_columns.append(name)
         
 print(drop_columns)
