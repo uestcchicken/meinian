@@ -3,14 +3,16 @@
 2. gen_feature_numerical.py  
 生成二维数据（仅取数值型）feature_numerical.csv
 
-3. add_text_feature.py  
-加入特征2302,0116,0113
+3. add_text_feature.py(add_text_feature_more.py)  
+加入特征2302,0116,0113,(1001)
 
 4. cut_lose.py  
 丢弃缺失值比例较大的列得到cutlose.csv
 
 5. cut_useless.py  
 删除异常数据，仅对train，得到train_cut_useless.csv
+
+对test_cutlose.csv将32b7cddb800f4218e77ec9e4d9092fa5的-90手动改为均值58
 
 6. train.py  
 train_cut_useless.csv和test_cutlose.csv
@@ -23,7 +25,6 @@ train_cut_useless.csv和test_cutlose.csv
 todo：
 
 - data里哪些是1人1项多次的
-- fobj
 
 ## v1.0
 
@@ -117,7 +118,25 @@ score: 0.0326
 
 ## v1.1
 
-使用自定义fobj
+- 加入feature1001
+- 使用自定义fobj
+
+#### add_text_feature.py
+
+```python
+if l[1] == '1001':
+      if '早搏' in l[2]:
+          num = 1
+      elif '心律不齐' in l[2]:
+          num = 2
+      elif '心动过缓' in l[2]:
+          num = 3
+      elif '正常心电图' in l[2]:
+          num = 4
+      else:
+          num = 0
+      train.loc[train['vid'] == l[0], l[1]] = num
+```
 
 #### train.py
 
@@ -132,8 +151,18 @@ def obj_function(preds, train_data):
 def eval_function(preds, train_data):
     labels = train_data.get_label()
     return 'loss', np.mean(np.square(np.log1p(preds) - np.log1p(labels))), False
+
+categorical = ['2302', '0116', '0113_1', '0113_2', '1001']
+    
+params = {
+    'boosting': 'gbdt',
+    'objective': 'none',
+    'learning_rate': 0.1,
+    'num_leaves': 16,
+    'nthread': 8
+}
 ```
 
 #### result 
 
-valid: 0.0289
+valid: 0.0284
