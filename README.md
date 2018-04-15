@@ -11,7 +11,7 @@
 4. cut_lose.py  
 丢弃缺失值比例较大的列得到cutlose.csv
 
-5. cut_useless.py  
+5. cut_useless.py(合并至4)  
 删除异常数据，仅对train，得到train_cut_useless.csv
 
 对test_cutlose.csv将32b7cddb800f4218e77ec9e4d9092fa5的-90手动改为均值58
@@ -201,4 +201,12 @@ if l[1] == '0118':
 #### result 
 
 valid: 0.0284  
-score:
+score: 0.0310
+
+## v1.3
+
+- cut_lose.py不删除缺失值较多的列
+
+#### result
+
+valid: 0.0282

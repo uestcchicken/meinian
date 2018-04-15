@@ -38,6 +38,8 @@ predictors = list(train.columns)
 predictors.remove('vid')
 for t in ['A', 'B', 'C', 'D', 'E']:
     predictors.remove(t)
+    
+predictors_C = predictors + ['A', 'B', 'D', 'E']
 
 categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2', '0437']
 
@@ -46,7 +48,6 @@ params = {
     'objective': 'none',
     'learning_rate': 0.05,
     'num_leaves': 128,
-    #'min_data_in_leaf': 100,
     'feature_fraction': 0.8,
     'nthread': 8
 }
@@ -55,12 +56,13 @@ dtrain_A = lgb.Dataset(train[predictors].values, label = train['A'].values, feat
 dvalid_A = lgb.Dataset(val[predictors].values, label = val['A'].values, feature_name = predictors, categorical_feature = categorical)
 dtrain_B = lgb.Dataset(train[predictors].values, label = train['B'].values, feature_name = predictors, categorical_feature = categorical)
 dvalid_B = lgb.Dataset(val[predictors].values, label = val['B'].values, feature_name = predictors, categorical_feature = categorical)
-dtrain_C = lgb.Dataset(train[predictors].values, label = train['C'].values, feature_name = predictors, categorical_feature = categorical)
-dvalid_C = lgb.Dataset(val[predictors].values, label = val['C'].values, feature_name = predictors, categorical_feature = categorical)
 dtrain_D = lgb.Dataset(train[predictors].values, label = train['D'].values, feature_name = predictors, categorical_feature = categorical)
 dvalid_D = lgb.Dataset(val[predictors].values, label = val['D'].values, feature_name = predictors, categorical_feature = categorical)
 dtrain_E = lgb.Dataset(train[predictors].values, label = train['E'].values, feature_name = predictors, categorical_feature = categorical)
 dvalid_E = lgb.Dataset(val[predictors].values, label = val['E'].values, feature_name = predictors, categorical_feature = categorical)
+
+dtrain_C = lgb.Dataset(train[predictors_C].values, label = train['C'].values, feature_name = predictors_C, categorical_feature = categorical)
+dvalid_C = lgb.Dataset(val[predictors_C].values, label = val['C'].values, feature_name = predictors_C, categorical_feature = categorical)
 
 result_A = {}
 result_B = {}
@@ -72,12 +74,14 @@ lgb_model_A = lgb.train(params, dtrain_A, feature_name = predictors, categorical
     valid_sets = [dtrain_A, dvalid_A], num_boost_round = 10000, early_stopping_rounds = 50)
 lgb_model_B = lgb.train(params, dtrain_B, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_B, verbose_eval = 50, \
     valid_sets = [dtrain_B, dvalid_B], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_C = lgb.train(params, dtrain_C, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 50, \
-    valid_sets = [dtrain_C, dvalid_C], num_boost_round = 10000, early_stopping_rounds = 50)
 lgb_model_D = lgb.train(params, dtrain_D, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_D, verbose_eval = 50, \
     valid_sets = [dtrain_D, dvalid_D], num_boost_round = 10000, early_stopping_rounds = 50)
 lgb_model_E = lgb.train(params, dtrain_E, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_E, verbose_eval = 50, \
     valid_sets = [dtrain_E, dvalid_E], num_boost_round = 10000, early_stopping_rounds = 50)
+    
+lgb_model_C = lgb.train(params, dtrain_C, feature_name = predictors_C, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 50, \
+    valid_sets = [dtrain_C, dvalid_C], num_boost_round = 10000, early_stopping_rounds = 50)
+
 
 loss_all = 0.0
 loss_all += result_A['valid_1']['loss'][lgb_model_A.best_iteration - 1]
@@ -90,21 +94,21 @@ print('predicting submission...')
 submit = pd.read_csv(test_path, usecols = ['vid'])       
 submit['A'] = lgb_model_A.predict(test[predictors], num_iteration = lgb_model_A.best_iteration)
 submit['B'] = lgb_model_B.predict(test[predictors], num_iteration = lgb_model_B.best_iteration)
-submit['C'] = lgb_model_C.predict(test[predictors], num_iteration = lgb_model_C.best_iteration)
 submit['D'] = lgb_model_D.predict(test[predictors], num_iteration = lgb_model_D.best_iteration)
 submit['E'] = lgb_model_E.predict(test[predictors], num_iteration = lgb_model_E.best_iteration)
 
+submit['C'] = lgb_model_C.predict(test[predictors_C], num_iteration = lgb_model_C.best_iteration)
 '''
-for i in range(len(lgb_model_A.feature_name())):
-    print(lgb_model_A.feature_name()[i], list(lgb_model_A.feature_importance())[i], \
-        list(lgb_model_B.feature_importance())[i], \
-        list(lgb_model_C.feature_importance())[i], \
-        list(lgb_model_D.feature_importance())[i], \
-        list(lgb_model_E.feature_importance())[i])
+print('Feature names:', lgb_model_A.feature_name())
+print('AFeature importances:', list(lgb_model_A.feature_importance()))      
+print('BFeature importances:', list(lgb_model_B.feature_importance()))  
+print('CFeature importances:', list(lgb_model_C.feature_importance()))  
+print('DFeature importances:', list(lgb_model_D.feature_importance()))  
+print('EFeature importances:', list(lgb_model_E.feature_importance()))  
 '''
 print('final loss: ', loss_all / 5)
 
 print('writing submission...')
-submit.to_csv('submission.csv', index = False, header = False)
+submit.to_csv('submission.csv', index = False, header = False, columns = ['vid', 'A', 'B', 'C', 'D', 'E'])
 print('done.')
 

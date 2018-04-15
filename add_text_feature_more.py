@@ -1,4 +1,5 @@
 import pandas as pd 
+import numpy as np
 
 f = open('data.csv', 'r')
 lines = f.readlines()[1:]
@@ -18,8 +19,9 @@ for i in range(0, len(lines)):
         print(i, '/', len(lines), i / len(lines) * 100 , '%')
     l = lines[i]
 
-    if l[1] not in ['1001', '0118']:
+    if l[1] not in ['1001', '0118', '0437']:
         continue
+    
     
     '''
     if l[1] == '1001':
@@ -34,7 +36,7 @@ for i in range(0, len(lines)):
         else:
             num = 0
         train.loc[train['vid'] == l[0], l[1]] = num 
-    '''
+    
     if l[1] == '0118':
         if '系统分离' in l[2]:
             num1 = 1
@@ -53,6 +55,17 @@ for i in range(0, len(lines)):
             num2 = 0
         train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
         train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
+    '''
+    if l[1] == '0437':
+        if '高' in l[2]:
+            num = 1
+        elif '未见异常' in l[2] or '正常' in l[2] or '无异常' in l[2] or '无特殊记载' in l[2]:
+            num = 2
+        elif 'CM' in l[2]:
+            num = 3
+        else:
+            num = 0
+        train.loc[train['vid'] == l[0], l[1]] = num 
     else:
         continue
 

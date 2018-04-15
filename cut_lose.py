@@ -16,7 +16,7 @@ del test
 gc.collect()
 
 print(train.info())
-
+'''
 drop_columns = []
 for name in list(train.columns):
     n = train[name]
@@ -25,17 +25,25 @@ for name in list(train.columns):
         if values.index[0] == True:
             drop_columns.append(name)
         continue
-    if values[True] > 47500:
+    if values[True] > 45000:
         drop_columns.append(name)
         
 print(drop_columns)
-train.drop(drop_columns, axis = 1, inplace = True)
+'''
+#train.drop(drop_columns, axis = 1, inplace = True)
 
 print(train.info())
 
 test = train[l:]
 train = train[:l]
 
-train.to_csv('train_cutlose.csv', index = False)
+train = train[train['A'] > 0.0]
+train = train[train['B'] > 0.0]
+train = train[train['E'] > 0.0]
+train = train[train['2403'] < 5000]
+train = train[train['10004'] >= 0.0]
+train = train[train['1814'] < 1800]
+
+train.to_csv('train_cut_useless.csv', index = False)
 test.to_csv('test_cutlose.csv', index = False)
         
