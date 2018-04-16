@@ -1,10 +1,7 @@
 import pandas as pd 
 import numpy as np 
 import lightgbm as lgb 
-import seaborn as sns
-import matplotlib.pyplot as plt
 import gc
-import xgboost as xgb
 import math
 
 def obj_function(preds, train_data):
@@ -38,17 +35,73 @@ predictors = list(train.columns)
 predictors.remove('vid')
 for t in ['A', 'B', 'C', 'D', 'E']:
     predictors.remove(t)
+    
+#predictors = predictors[:-14]
 
-categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2', '0437']
+categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2', '0437', \
+    '0434_1', '0434_2', '0434_3', '0434_4', '0434_5', '0434_6']
+#categorical = []
+#categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2', '0437']
 
 params = {
     'boosting': 'gbdt',
     'objective': 'none',
-    'learning_rate': 0.05,
-    'num_leaves': 10,
-    #'min_data_in_leaf': 100,
+    'nthread': 8,
+    'learning_rate': 0.02,
+    'num_leaves': 64,
     'feature_fraction': 0.8,
-    'nthread': 8
+    #'min_data_in_leaf': 100,
+    'max_bin': 512,
+}
+
+params_A = {
+    'boosting': 'gbdt',
+    'objective': 'none',
+    'nthread': 8,
+    'learning_rate': 0.02,
+    'num_leaves': 64,
+    'feature_fraction': 0.8,
+    'min_data_in_leaf': 100,
+    'max_bin': 512,
+}
+
+params_B = {
+    'boosting': 'gbdt',
+    'objective': 'none',
+    'nthread': 8,
+    'learning_rate': 0.02,
+    'num_leaves': 32,
+    'feature_fraction': 0.8,
+    'min_data_in_leaf': 100,
+    'max_bin': 512,
+}
+
+params_C = {
+    'boosting': 'gbdt',
+    'objective': 'none',
+    'nthread': 8,
+    'learning_rate': 0.02,
+    'num_leaves': 128,
+    'feature_fraction': 0.8,
+}
+
+params_D = {
+    'boosting': 'gbdt',
+    'objective': 'none',
+    'nthread': 8,
+    'learning_rate': 0.02,
+    'num_leaves': 256,
+    'feature_fraction': 0.8,
+    'max_bin': 512,
+}
+
+params_E = {
+    'boosting': 'gbdt',
+    'objective': 'none',
+    'nthread': 8,
+    'learning_rate': 0.02,
+    'num_leaves': 128,
+    'feature_fraction': 0.8,
 }
 
 dtrain_A = lgb.Dataset(train[predictors].values, label = train['A'].values, feature_name = predictors, categorical_feature = categorical)
@@ -68,15 +121,20 @@ result_C = {}
 result_D = {}
 result_E = {}
 
-lgb_model_A = lgb.train(params, dtrain_A, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_A, verbose_eval = 50, \
+lgb_model_A = lgb.train(params_A, dtrain_A, feature_name = predictors, categorical_feature = categorical, \
+    feval = eval_function, fobj = obj_function, evals_result = result_A, verbose_eval = 50, \
     valid_sets = [dtrain_A, dvalid_A], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_B = lgb.train(params, dtrain_B, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_B, verbose_eval = 50, \
+lgb_model_B = lgb.train(params_B, dtrain_B, feature_name = predictors, categorical_feature = categorical, \
+    feval = eval_function, fobj = obj_function, evals_result = result_B, verbose_eval = 50, \
     valid_sets = [dtrain_B, dvalid_B], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_C = lgb.train(params, dtrain_C, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 50, \
+lgb_model_C = lgb.train(params_C, dtrain_C, feature_name = predictors, categorical_feature = categorical, \
+    feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 50, \
     valid_sets = [dtrain_C, dvalid_C], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_D = lgb.train(params, dtrain_D, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_D, verbose_eval = 50, \
+lgb_model_D = lgb.train(params_D, dtrain_D, feature_name = predictors, categorical_feature = categorical, \
+    feval = eval_function, fobj = obj_function, evals_result = result_D, verbose_eval = 50, \
     valid_sets = [dtrain_D, dvalid_D], num_boost_round = 10000, early_stopping_rounds = 50)
-lgb_model_E = lgb.train(params, dtrain_E, feature_name = predictors, categorical_feature = categorical, feval = eval_function, fobj = obj_function, evals_result = result_E, verbose_eval = 50, \
+lgb_model_E = lgb.train(params_E, dtrain_E, feature_name = predictors, categorical_feature = categorical, \
+    feval = eval_function, fobj = obj_function, evals_result = result_E, verbose_eval = 50, \
     valid_sets = [dtrain_E, dvalid_E], num_boost_round = 10000, early_stopping_rounds = 50)
 
 loss_all = 0.0
@@ -94,14 +152,14 @@ submit['C'] = lgb_model_C.predict(test[predictors], num_iteration = lgb_model_C.
 submit['D'] = lgb_model_D.predict(test[predictors], num_iteration = lgb_model_D.best_iteration)
 submit['E'] = lgb_model_E.predict(test[predictors], num_iteration = lgb_model_E.best_iteration)
 
-
+'''
 for i in range(len(lgb_model_A.feature_name())):
     print(lgb_model_A.feature_name()[i], list(lgb_model_A.feature_importance())[i], \
         list(lgb_model_B.feature_importance())[i], \
         list(lgb_model_C.feature_importance())[i], \
         list(lgb_model_D.feature_importance())[i], \
         list(lgb_model_E.feature_importance())[i])
-
+'''
 print('final loss: ', loss_all / 5)
 
 print('writing submission...')

@@ -19,7 +19,7 @@ for i in range(0, len(lines)):
         print(i, '/', len(lines), i / len(lines) * 100 , '%')
     l = lines[i]
 
-    if l[1] not in ['1001', '0118', '0437']:
+    if l[1] not in ['1001', '0118', '0437', '0434']:
         continue
     
     
@@ -55,7 +55,7 @@ for i in range(0, len(lines)):
             num2 = 0
         train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
         train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
-    '''
+    
     if l[1] == '0437':
         if '高' in l[2]:
             num = 1
@@ -66,6 +66,50 @@ for i in range(0, len(lines)):
         else:
             num = 0
         train.loc[train['vid'] == l[0], l[1]] = num 
+    '''
+    
+    if l[1] == '0434':
+        if '高血压史' in l[2]:
+            num1 = 1
+        elif '血压偏高' in l[2]:
+            num1 = 2
+        else:
+            num1 = 0
+            
+        if '糖尿病史' in l[2]:
+            num2 = 1
+        elif '血糖偏高' in l[2]:
+            num2 = 2
+        else:
+            num2 = 0
+            
+        if '脂肪肝史' in l[2]:
+            num3 = 1
+        elif '血脂偏高' in l[2]:
+            num3 = 2
+        else:
+            num3 = 0
+            
+        if '结石' in l[2]:
+            num4 = 1
+        else:
+            num4 = 0
+            
+        if '阑尾炎' in l[2]:
+            num5 = 1
+        else:
+            num5 = 0
+            
+        if '甲肝史' in l[2]:
+            num6 = 1
+        else:
+            num6 = 0
+        train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
+        train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
+        train.loc[train['vid'] == l[0], l[1] + '_3'] = num3
+        train.loc[train['vid'] == l[0], l[1] + '_4'] = num4
+        train.loc[train['vid'] == l[0], l[1] + '_5'] = num5
+        train.loc[train['vid'] == l[0], l[1] + '_6'] = num6
     else:
         continue
 

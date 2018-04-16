@@ -26,6 +26,8 @@ train_cut_useless.csv和test_cutlose.csv
 
 todo：
 
+- 1402
+- 1403
 - data里哪些是1人1项多次的
 
 ## v1.0
@@ -52,13 +54,16 @@ score: 0.0310
 
 - cut_lose.py不删除缺失值较多的列
 - 加入feature0437
-- 重新随机
+- 重新随机feature.csv
 
-valid: 0.0290
+valid: 0.0290  
 score: 0.0308
 
+## v1.4
 
+- 加入feature0434_1~6
+- 穷举法瞎几把调参
 
+valid: 0.0284  
+score: 0.0303
 
-guo  (256): 1541 1899 7102 1057 2920 ave: 2904  
-buguo( 10): 1545 1889 7118 1092 3037 ave: 2936
