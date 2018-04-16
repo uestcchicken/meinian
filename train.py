@@ -45,7 +45,7 @@ params = {
     'boosting': 'gbdt',
     'objective': 'none',
     'learning_rate': 0.05,
-    'num_leaves': 128,
+    'num_leaves': 10,
     #'min_data_in_leaf': 100,
     'feature_fraction': 0.8,
     'nthread': 8
@@ -94,14 +94,14 @@ submit['C'] = lgb_model_C.predict(test[predictors], num_iteration = lgb_model_C.
 submit['D'] = lgb_model_D.predict(test[predictors], num_iteration = lgb_model_D.best_iteration)
 submit['E'] = lgb_model_E.predict(test[predictors], num_iteration = lgb_model_E.best_iteration)
 
-'''
+
 for i in range(len(lgb_model_A.feature_name())):
     print(lgb_model_A.feature_name()[i], list(lgb_model_A.feature_importance())[i], \
         list(lgb_model_B.feature_importance())[i], \
         list(lgb_model_C.feature_importance())[i], \
         list(lgb_model_D.feature_importance())[i], \
         list(lgb_model_E.feature_importance())[i])
-'''
+
 print('final loss: ', loss_all / 5)
 
 print('writing submission...')
