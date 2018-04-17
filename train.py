@@ -35,19 +35,16 @@ predictors = list(train.columns)
 predictors.remove('vid')
 for t in ['A', 'B', 'C', 'D', 'E']:
     predictors.remove(t)
-    
-#predictors = predictors[:-14]
 
 categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2', '0437', \
-    '0434_1', '0434_2', '0434_3', '0434_4', '0434_5', '0434_6']
-#categorical = []
-#categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2', '0437']
+    '0434_1', '0434_2', '0434_3', '0434_4', '0434_5', '0434_6', \
+    '1402_1', '1402_2', '1402_3']
 
 params = {
     'boosting': 'gbdt',
     'objective': 'none',
     'nthread': 8,
-    'learning_rate': 0.02,
+    'learning_rate': 0.05,
     'num_leaves': 64,
     'feature_fraction': 0.8,
     #'min_data_in_leaf': 100,
@@ -59,10 +56,10 @@ params_A = {
     'objective': 'none',
     'nthread': 8,
     'learning_rate': 0.02,
-    'num_leaves': 64,
+    'num_leaves': 127,
     'feature_fraction': 0.8,
     'min_data_in_leaf': 100,
-    'max_bin': 512,
+    'max_bin': 127,
 }
 
 params_B = {
@@ -70,10 +67,10 @@ params_B = {
     'objective': 'none',
     'nthread': 8,
     'learning_rate': 0.02,
-    'num_leaves': 32,
+    'num_leaves': 63,
     'feature_fraction': 0.8,
     'min_data_in_leaf': 100,
-    'max_bin': 512,
+    'max_bin': 127,
 }
 
 params_C = {
@@ -81,8 +78,9 @@ params_C = {
     'objective': 'none',
     'nthread': 8,
     'learning_rate': 0.02,
-    'num_leaves': 128,
+    'num_leaves': 63,
     'feature_fraction': 0.8,
+    'min_data_in_leaf': 20,
 }
 
 params_D = {
@@ -90,9 +88,8 @@ params_D = {
     'objective': 'none',
     'nthread': 8,
     'learning_rate': 0.02,
-    'num_leaves': 256,
+    'num_leaves': 127,
     'feature_fraction': 0.8,
-    'max_bin': 512,
 }
 
 params_E = {
@@ -100,8 +97,10 @@ params_E = {
     'objective': 'none',
     'nthread': 8,
     'learning_rate': 0.02,
-    'num_leaves': 128,
+    'num_leaves': 63,
     'feature_fraction': 0.8,
+    'min_data_in_leaf': 60,
+    'max_bin': 127,
 }
 
 dtrain_A = lgb.Dataset(train[predictors].values, label = train['A'].values, feature_name = predictors, categorical_feature = categorical)
@@ -152,14 +151,14 @@ submit['C'] = lgb_model_C.predict(test[predictors], num_iteration = lgb_model_C.
 submit['D'] = lgb_model_D.predict(test[predictors], num_iteration = lgb_model_D.best_iteration)
 submit['E'] = lgb_model_E.predict(test[predictors], num_iteration = lgb_model_E.best_iteration)
 
-'''
+
 for i in range(len(lgb_model_A.feature_name())):
     print(lgb_model_A.feature_name()[i], list(lgb_model_A.feature_importance())[i], \
         list(lgb_model_B.feature_importance())[i], \
         list(lgb_model_C.feature_importance())[i], \
         list(lgb_model_D.feature_importance())[i], \
         list(lgb_model_E.feature_importance())[i])
-'''
+
 print('final loss: ', loss_all / 5)
 
 print('writing submission...')

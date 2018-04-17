@@ -19,7 +19,7 @@ for i in range(0, len(lines)):
         print(i, '/', len(lines), i / len(lines) * 100 , '%')
     l = lines[i]
 
-    if l[1] not in ['1001', '0118', '0437', '0434']:
+    if l[1] not in ['1001', '0118', '0437', '0434', '1402', '4001']:
         continue
     
     
@@ -66,7 +66,6 @@ for i in range(0, len(lines)):
         else:
             num = 0
         train.loc[train['vid'] == l[0], l[1]] = num 
-    '''
     
     if l[1] == '0434':
         if '高血压史' in l[2]:
@@ -110,6 +109,54 @@ for i in range(0, len(lines)):
         train.loc[train['vid'] == l[0], l[1] + '_4'] = num4
         train.loc[train['vid'] == l[0], l[1] + '_5'] = num5
         train.loc[train['vid'] == l[0], l[1] + '_6'] = num6
+    if l[1] == '1402':
+        if '弹性降低' in l[2] or '弹性减退' in l[2]:
+            num1 = 1
+        else:
+            num1 = 0
+            
+        if '动脉硬化' in l[2]:
+            num2 = 1
+        else:
+            num2 = 0
+            
+        if '速度减慢' in l[2] or '速度略减慢' in l[2]:
+            num3 = 1
+        elif '速度增快' in l[2] or '速度略增快' in l[2]:
+            num3 = 2
+        else:
+            num3 = 0
+        train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
+        train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
+        train.loc[train['vid'] == l[0], l[1] + '_3'] = num3
+    '''
+    if l[1] == '4001':
+        if '轻度减弱' in l[2]:
+            num1 = 2
+        elif '中度减弱' in l[2]:
+            num1 = 3
+        elif '重度减弱' in l[2]:
+            num1 = 4
+        elif '减弱趋势' in l[2]:
+            num1 = 1
+        else:
+            num1 = 0
+            
+        if '轻度硬化' in l[2]:
+            num2 = 1
+        elif '硬化稍高' in l[2]:
+            num2 = 2
+        elif '硬化可能' in l[2]:
+            num2 = 3
+        elif '相比（稍硬、硬）' in l[2]:
+            num2 = 4
+        elif '动脉硬化' in l[2]:
+            num2 = 5
+        else:
+            num2 = 0
+
+        train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
+        train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
     else:
         continue
 

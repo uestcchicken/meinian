@@ -6,7 +6,7 @@
 生成二维数据（仅取数值型）feature_numerical.csv
 
 3. add_text_feature.py(add_text_feature_more.py)  
-加入特征2302,0116,0113,(1001)
+加入特征2302,0116,0113(,1001,0118,0437,0434,1402,4001)
 
 4. cut_lose.py  
 丢弃缺失值比例较大的列得到cutlose.csv
@@ -22,12 +22,17 @@ train_cut_useless.csv和test_cutlose.csv
 其他：
 
 - gen_texts.py  
-生成最多的几个文字型信息
+生成文字型信息
+
+无视体检项：
+
+- 02xx：耳鼻喉
+- 07xx：牙科
+- 13xx：眼科
+- 09xx：外科
 
 todo：
 
-- 1402
-- 1403
 - data里哪些是1人1项多次的
 
 ## v1.0
@@ -45,7 +50,7 @@ score: 0.0311
 
 ## v1.2
 
-- 加入feature0118_1, 0118_2
+- 加入feature0118_1~2
 
 valid: 0.0284  
 score: 0.0310
@@ -67,3 +72,14 @@ score: 0.0308
 valid: 0.0284  
 score: 0.0303
 
+## v1.5
+
+- 加入feature1402_1~3
+- gridsearch for A
+
+valid: 0.0283
+score: 0.0303
+
+## v1.6
+
+- 加入feature4001_1~2
