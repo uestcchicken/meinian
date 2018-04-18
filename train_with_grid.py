@@ -38,17 +38,20 @@ for t in ['A', 'B', 'C', 'D', 'E']:
 
 categorical = ['2302', '0116', '0113_1', '0113_2', '1001', '0118_1', '0118_2', '0437', \
     '0434_1', '0434_2', '0434_3', '0434_4', '0434_5', '0434_6', \
-    '1402_1', '1402_2', '1402_3']
+    '1402_1', '1402_2', '1402_3', '4001_1', '4001_2', \
+    '0409_1', '0409_2', '0409_3', '0409_4', '0409_5', \
+    '0409_6', '0409_7', '0409_8', '0409_9', '0409_10', \
+    '3301', '3399', '30007']
 
 params_num_leaves = [31, 63, 127]
 params_min_data_in_leaf = [20, 60, 100]
 params_max_bin = [127, 255, 511]
 params_feature_fraction = [0.8]
 
-#params_num_leaves = [255]
-#params_min_data_in_leaf = [60]
-#params_max_bin = [255, 511]
-#params_feature_fraction = [0.8]
+params_num_leaves = [255]
+params_min_data_in_leaf = [20]
+params_max_bin = [127, 255, 511]
+params_feature_fraction = [0.8]
 
 best_loss_A = 100
 best_loss_B = 100
@@ -56,11 +59,32 @@ best_loss_C = 100
 best_loss_D = 100
 best_loss_E = 100
 
-best_loss_A = 0.013896192861415321
-best_num_leaves_A = 127
+best_loss_A = 0.01380204339311637
+best_num_leaves_A = 63
 best_min_data_in_leaf_A = 100
 best_max_bin_A = 127
 best_feature_fraction_A = 0.8
+best_loss_B = 0.01767496008382642
+best_num_leaves_B = 31
+best_min_data_in_leaf_B = 100
+best_max_bin_B = 255
+best_feature_fraction_B = 0.8
+best_loss_C = 0.07004568801289758
+best_num_leaves_C = 63
+best_min_data_in_leaf_C = 20
+best_max_bin_C = 511
+best_feature_fraction_C = 0.8
+best_loss_D = 0.010433867588869343
+best_num_leaves_D = 127
+best_min_data_in_leaf_D = 60
+best_max_bin_D = 255
+best_feature_fraction_D = 0.8
+best_loss_E = 0.029003656812253233
+best_num_leaves_E = 63
+best_min_data_in_leaf_E = 20
+best_max_bin_E = 255
+best_feature_fraction_E = 0.8
+
 
 for num_leaves in params_num_leaves:
     for min_data_in_leaf in params_min_data_in_leaf:
@@ -82,60 +106,58 @@ for num_leaves in params_num_leaves:
                     'max_bin': max_bin,
                 }
 
-                #dtrain_A = lgb.Dataset(train[predictors].values, label = train['A'].values, feature_name = predictors, categorical_feature = categorical)
-                #dvalid_A = lgb.Dataset(val[predictors].values, label = val['A'].values, feature_name = predictors, categorical_feature = categorical)
+                dtrain_A = lgb.Dataset(train[predictors].values, label = train['A'].values, feature_name = predictors, categorical_feature = categorical)
+                dvalid_A = lgb.Dataset(val[predictors].values, label = val['A'].values, feature_name = predictors, categorical_feature = categorical)
                 dtrain_B = lgb.Dataset(train[predictors].values, label = train['B'].values, feature_name = predictors, categorical_feature = categorical)
                 dvalid_B = lgb.Dataset(val[predictors].values, label = val['B'].values, feature_name = predictors, categorical_feature = categorical)
-                #dtrain_C = lgb.Dataset(train[predictors].values, label = train['C'].values, feature_name = predictors, categorical_feature = categorical)
-                #dvalid_C = lgb.Dataset(val[predictors].values, label = val['C'].values, feature_name = predictors, categorical_feature = categorical)
-                #dtrain_D = lgb.Dataset(train[predictors].values, label = train['D'].values, feature_name = predictors, categorical_feature = categorical)
-                #dvalid_D = lgb.Dataset(val[predictors].values, label = val['D'].values, feature_name = predictors, categorical_feature = categorical)
-                #dtrain_E = lgb.Dataset(train[predictors].values, label = train['E'].values, feature_name = predictors, categorical_feature = categorical)
-                #dvalid_E = lgb.Dataset(val[predictors].values, label = val['E'].values, feature_name = predictors, categorical_feature = categorical)
+                dtrain_C = lgb.Dataset(train[predictors].values, label = train['C'].values, feature_name = predictors, categorical_feature = categorical)
+                dvalid_C = lgb.Dataset(val[predictors].values, label = val['C'].values, feature_name = predictors, categorical_feature = categorical)
+                dtrain_D = lgb.Dataset(train[predictors].values, label = train['D'].values, feature_name = predictors, categorical_feature = categorical)
+                dvalid_D = lgb.Dataset(val[predictors].values, label = val['D'].values, feature_name = predictors, categorical_feature = categorical)
+                dtrain_E = lgb.Dataset(train[predictors].values, label = train['E'].values, feature_name = predictors, categorical_feature = categorical)
+                dvalid_E = lgb.Dataset(val[predictors].values, label = val['E'].values, feature_name = predictors, categorical_feature = categorical)
 
-                #result_A = {}
+                result_A = {}
                 result_B = {}
-                #result_C = {}
-                #result_D = {}
-                #result_E = {}
+                result_C = {}
+                result_D = {}
+                result_E = {}
 
-                #lgb_model_A = lgb.train(params, dtrain_A, feature_name = predictors, categorical_feature = categorical, \
-                #    feval = eval_function, fobj = obj_function, evals_result = result_A, verbose_eval = 200, \
-                #    valid_sets = [dtrain_A, dvalid_A], num_boost_round = 100000, early_stopping_rounds = 50)
+                lgb_model_A = lgb.train(params, dtrain_A, feature_name = predictors, categorical_feature = categorical, \
+                    feval = eval_function, fobj = obj_function, evals_result = result_A, verbose_eval = 200, \
+                    valid_sets = [dtrain_A, dvalid_A], num_boost_round = 100000, early_stopping_rounds = 50)
                 lgb_model_B = lgb.train(params, dtrain_B, feature_name = predictors, categorical_feature = categorical, \
                     feval = eval_function, fobj = obj_function, evals_result = result_B, verbose_eval = 200, \
                     valid_sets = [dtrain_B, dvalid_B], num_boost_round = 100000, early_stopping_rounds = 50)
-                #lgb_model_C = lgb.train(params, dtrain_C, feature_name = predictors, categorical_feature = categorical, \
-                #    feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 200, \
-                #    valid_sets = [dtrain_C, dvalid_C], num_boost_round = 100000, early_stopping_rounds = 50)
-                #lgb_model_D = lgb.train(params, dtrain_D, feature_name = predictors, categorical_feature = categorical, \
-                #    feval = eval_function, fobj = obj_function, evals_result = result_D, verbose_eval = 200, \
-                #    valid_sets = [dtrain_D, dvalid_D], num_boost_round = 100000, early_stopping_rounds = 50)
-                #lgb_model_E = lgb.train(params, dtrain_E, feature_name = predictors, categorical_feature = categorical, \
-                #    feval = eval_function, fobj = obj_function, evals_result = result_E, verbose_eval = 200, \
-                #    valid_sets = [dtrain_E, dvalid_E], num_boost_round = 100000, early_stopping_rounds = 50)
+                lgb_model_C = lgb.train(params, dtrain_C, feature_name = predictors, categorical_feature = categorical, \
+                    feval = eval_function, fobj = obj_function, evals_result = result_C, verbose_eval = 200, \
+                    valid_sets = [dtrain_C, dvalid_C], num_boost_round = 100000, early_stopping_rounds = 50)
+                lgb_model_D = lgb.train(params, dtrain_D, feature_name = predictors, categorical_feature = categorical, \
+                    feval = eval_function, fobj = obj_function, evals_result = result_D, verbose_eval = 200, \
+                    valid_sets = [dtrain_D, dvalid_D], num_boost_round = 100000, early_stopping_rounds = 50)
+                lgb_model_E = lgb.train(params, dtrain_E, feature_name = predictors, categorical_feature = categorical, \
+                    feval = eval_function, fobj = obj_function, evals_result = result_E, verbose_eval = 200, \
+                    valid_sets = [dtrain_E, dvalid_E], num_boost_round = 100000, early_stopping_rounds = 50)
 
                 
-                #loss_A = result_A['valid_1']['loss'][lgb_model_A.best_iteration - 1]
+                loss_A = result_A['valid_1']['loss'][lgb_model_A.best_iteration - 1]
                 loss_B = result_B['valid_1']['loss'][lgb_model_B.best_iteration - 1]
-                #loss_C = result_C['valid_1']['loss'][lgb_model_C.best_iteration - 1]
-                #loss_D = result_D['valid_1']['loss'][lgb_model_D.best_iteration - 1]
-                #loss_E = result_E['valid_1']['loss'][lgb_model_E.best_iteration - 1]
-                '''
+                loss_C = result_C['valid_1']['loss'][lgb_model_C.best_iteration - 1]
+                loss_D = result_D['valid_1']['loss'][lgb_model_D.best_iteration - 1]
+                loss_E = result_E['valid_1']['loss'][lgb_model_E.best_iteration - 1]
+                
                 if loss_A < best_loss_A:
                     best_loss_A = loss_A
                     best_num_leaves_A = num_leaves
                     best_min_data_in_leaf_A = min_data_in_leaf
                     best_max_bin_A = max_bin
                     best_feature_fraction_A = feature_fraction
-                '''
                 if loss_B < best_loss_B:
                     best_loss_B = loss_B
                     best_num_leaves_B = num_leaves
                     best_min_data_in_leaf_B = min_data_in_leaf
                     best_max_bin_B = max_bin
                     best_feature_fraction_B = feature_fraction
-                '''
                 if loss_C < best_loss_C:
                     best_loss_C = loss_C
                     best_num_leaves_C = num_leaves
@@ -155,68 +177,65 @@ for num_leaves in params_num_leaves:
                     best_max_bin_E = max_bin
                     best_feature_fraction_E = feature_fraction
                 
-                print('best_loss_A:', best_loss_A)
-                print('best_num_leaves_A:', best_num_leaves_A)
-                print('best_min_data_in_leaf_A:', best_min_data_in_leaf_A)
-                print('best_max_bin_A:', best_max_bin_A)            
-                print('best_feature_fraction_A:', best_feature_fraction_A)
-                '''
-                print('best_loss_B:', best_loss_B)
-                print('best_num_leaves_B:', best_num_leaves_B)
-                print('best_min_data_in_leaf_B:', best_min_data_in_leaf_B)
-                print('best_max_bin_B:', best_max_bin_B)            
-                print('best_feature_fraction_B:', best_feature_fraction_B)
-                '''
-                print('best_loss_C:', best_loss_C)
-                print('best_num_leaves_C:', best_num_leaves_C)
-                print('best_min_data_in_leaf_C:', best_min_data_in_leaf_C)
-                print('best_max_bin_C:', best_max_bin_C)            
-                print('best_feature_fraction_C:', best_feature_fraction_C)
+                print('best_loss_A =', best_loss_A)
+                print('best_num_leaves_A =', best_num_leaves_A)
+                print('best_min_data_in_leaf_A =', best_min_data_in_leaf_A)
+                print('best_max_bin_A =', best_max_bin_A)            
+                print('best_feature_fraction_A =', best_feature_fraction_A)
+                
+                print('best_loss_B =', best_loss_B)
+                print('best_num_leaves_B =', best_num_leaves_B)
+                print('best_min_data_in_leaf_B =', best_min_data_in_leaf_B)
+                print('best_max_bin_B =', best_max_bin_B)            
+                print('best_feature_fraction_B =', best_feature_fraction_B)
+                
+                print('best_loss_C =', best_loss_C)
+                print('best_num_leaves_C =', best_num_leaves_C)
+                print('best_min_data_in_leaf_C =', best_min_data_in_leaf_C)
+                print('best_max_bin_C =', best_max_bin_C)            
+                print('best_feature_fraction_C =', best_feature_fraction_C)
 
-                print('best_loss_D:', best_loss_D)
-                print('best_num_leaves_D:', best_num_leaves_D)
-                print('best_min_data_in_leaf_D:', best_min_data_in_leaf_D)
-                print('best_max_bin_D:', best_max_bin_D)            
-                print('best_feature_fraction_D:', best_feature_fraction_D)
+                print('best_loss_D =', best_loss_D)
+                print('best_num_leaves_D =', best_num_leaves_D)
+                print('best_min_data_in_leaf_D =', best_min_data_in_leaf_D)
+                print('best_max_bin_D =', best_max_bin_D)            
+                print('best_feature_fraction_D =', best_feature_fraction_D)
 
-                print('best_loss_E:', best_loss_E)
-                print('best_num_leaves_E:', best_num_leaves_E)
-                print('best_min_data_in_leaf_E:', best_min_data_in_leaf_E)
-                print('best_max_bin_E:', best_max_bin_E)            
-                print('best_feature_fraction_E:', best_feature_fraction_E)
-                '''
+                print('best_loss_E =', best_loss_E)
+                print('best_num_leaves_E =', best_num_leaves_E)
+                print('best_min_data_in_leaf_E =', best_min_data_in_leaf_E)
+                print('best_max_bin_E =', best_max_bin_E)            
+                print('best_feature_fraction_E =', best_feature_fraction_E)
+                
    
 '''
-est_loss_A: 0.014027030765994285
+best_loss_A: 0.01380204339311637
 best_num_leaves_A: 63
-best_min_data_in_leaf_A: 60
-best_max_bin_A: 511
+best_min_data_in_leaf_A: 100
+best_max_bin_A: 127
 best_feature_fraction_A: 0.8
-best_loss_B: 0.017767903920091647
-best_num_leaves_B: 63
+best_loss_B: 0.01767496008382642
+best_num_leaves_B: 31
 best_min_data_in_leaf_B: 100
-best_max_bin_B: 127
+best_max_bin_B: 255
 best_feature_fraction_B: 0.8
-best_loss_C: 0.06996385316013512
+best_loss_C: 0.07004568801289758
 best_num_leaves_C: 63
 best_min_data_in_leaf_C: 20
-best_max_bin_C: 255
+best_max_bin_C: 511
 best_feature_fraction_C: 0.8
-best_loss_D: 0.01042707271302594
+best_loss_D: 0.010433867588869343
 best_num_leaves_D: 127
-best_min_data_in_leaf_D: 20
+best_min_data_in_leaf_D: 60
 best_max_bin_D: 255
 best_feature_fraction_D: 0.8
-best_loss_E: 0.029002171249623447
+best_loss_E: 0.029003656812253233
 best_num_leaves_E: 63
-best_min_data_in_leaf_E: 60
-best_max_bin_E: 127
+best_min_data_in_leaf_E: 20
+best_max_bin_E: 255
 best_feature_fraction_E: 0.8
 ********************************************
-127
-20
-511
-0.8
+
 '''
             
             

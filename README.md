@@ -33,6 +33,10 @@ train_cut_useless.csv和test_cutlose.csv
 
 todo：
 
+- 0409
+- 3301
+- 3399
+- 30007
 - data里哪些是1人1项多次的
 
 ## v1.0
@@ -77,9 +81,17 @@ score: 0.0303
 - 加入feature1402_1~3
 - gridsearch for A
 
-valid: 0.0283
+valid: 0.0283  
 score: 0.0303
 
 ## v1.6
 
 - 加入feature4001_1~2
+- gridsearch for ABCDE
+- 加入feature0409_1~10,3001,3399,30007
+
+valid: 0.0282
+score: 0.0300
+
+## v1.7
+

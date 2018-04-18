@@ -19,7 +19,8 @@ for i in range(0, len(lines)):
         print(i, '/', len(lines), i / len(lines) * 100 , '%')
     l = lines[i]
 
-    if l[1] not in ['1001', '0118', '0437', '0434', '1402', '4001']:
+    #if l[1] not in ['1001', '0118', '0437', '0434', '1402', '4001']:
+    if l[1] not in ['0409', '3301', '3399', '30007']:
         continue
     
     
@@ -129,7 +130,7 @@ for i in range(0, len(lines)):
         train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
         train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
         train.loc[train['vid'] == l[0], l[1] + '_3'] = num3
-    '''
+    
     if l[1] == '4001':
         if '轻度减弱' in l[2]:
             num1 = 2
@@ -157,6 +158,87 @@ for i in range(0, len(lines)):
 
         train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
         train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
+    '''
+    if l[1] == '0409':
+        if '高血压史' in l[2]:
+            num1 = 1
+        else:
+            num1 = 0        
+        if '糖尿病史' in l[2]:
+            num2 = 1
+        else:
+            num2 = 0
+        if '脂肪肝史' in l[2]:
+            num3 = 1
+        else:
+            num3 = 0        
+        if '血压偏高' in l[2]:
+            num4 = 1
+        else:
+            num4 = 0
+        if '血脂偏高' in l[2]:
+            num5 = 1
+        else:
+            num5 = 0        
+        if '尿酸偏高' in l[2]:
+            num6 = 1
+        else:
+            num6 = 0
+        if '心律不齐' in l[2]:
+            num7 = 1
+        else:
+            num7 = 0        
+        if '冠心病史' in l[2]:
+            num8 = 1
+        else:
+            num8 = 0
+        if '心动过缓' in l[2]:
+            num9 = 1
+        else:
+            num9 = 0      
+        if '早搏' in l[2]:
+            num10 = 1
+        else:
+            num10 = 0     
+
+        train.loc[train['vid'] == l[0], l[1] + '_1'] = num1
+        train.loc[train['vid'] == l[0], l[1] + '_2'] = num2
+        train.loc[train['vid'] == l[0], l[1] + '_3'] = num3
+        train.loc[train['vid'] == l[0], l[1] + '_4'] = num4
+        train.loc[train['vid'] == l[0], l[1] + '_5'] = num5
+        train.loc[train['vid'] == l[0], l[1] + '_6'] = num6
+        train.loc[train['vid'] == l[0], l[1] + '_7'] = num7
+        train.loc[train['vid'] == l[0], l[1] + '_8'] = num8
+        train.loc[train['vid'] == l[0], l[1] + '_9'] = num9
+        train.loc[train['vid'] == l[0], l[1] + '_10'] = num10
+    elif l[1] == '3301':
+        if '阳性' in l[2]:
+            num1 = 1
+        elif '阴性' in l[2]:
+            num1 = 2
+        else:
+            num1 = 0
+        train.loc[train['vid'] == l[0], l[1]] = num1
+    elif l[1] == '3399':
+        if '淡黄色' in l[2]:
+            num1 = 1
+        elif '黄色' in l[2] or 'yellow' in l[2]:
+            num1 = 2
+        else:
+            num1 = 0
+        train.loc[train['vid'] == l[0], l[1]] = num1
+    elif l[1] == '30007':
+        if 'Ⅳ' in l[2] or 'IV' in l[2] or 'iv' in l[2]:
+            num1 = 4
+        elif 'Ⅲ' in l[2] or 'III' in l[2] or 'iii' in l[2]:
+            num1 = 3
+        elif 'Ⅱ' in l[2] or 'II' in l[2] or 'ii' in l[2]:
+            num1 = 2
+        elif 'Ⅰ' in l[2] or 'I' in l[2] or 'i' in l[2]:
+            num1 = 1
+        else:
+            num1 = 0
+        train.loc[train['vid'] == l[0], l[1]] = num1
     else:
         continue
 
